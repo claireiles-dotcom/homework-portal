@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Homework Submission Portal</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        /* --- CSS VARIABLES & RESET --- */
+        :root {
+            --primary-orange: #FFA42E;
+            --primary-orange-hover: #e69020;
+            --text-black: #363636;
+            --text-gray: #666666;
+            --bg-page: #F3F4F6;
+            --bg-card: #FFFFFF;
+            --border-color: #E5E7EB;
+            --radius: 8px;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --font-family: 'Inter', sans-serif;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: var(--font-family);
+            background-color: var(--bg-page);
+            color: var(--text-black);
+            line-height: 1.5;
+            padding: 2rem 1rem;
+        }
+
+        /* --- LAYOUT CONTAINER --- */
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background-color: var(--bg-card);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            border-top: 8px solid var(--primary-orange);
+            padding: 2.5rem;
+        }
+
+        /* --- HEADER --- */
+        header { text-align: center; margin-bottom: 2.5rem; }
+        
+        h1 {
+            font-size: 2.25rem;
+            font-weight: 800;
+            color: var(--text-black);
+            letter-spacing: -0.025em;
+            margin-bottom: 0.5rem;
+        }
+
+        h2 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--primary-orange);
+        }
+
+        /* --- FORM ELEMENTS --- */
+        .form-row {
+            display: flex;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        @media (max-width: 768px) {
+            .form-row { flex-direction: column; gap: 1rem; }
+        }
+
+        .form-group { margin-bottom: 1.5rem; width: 100%; }
+
+        label {
+            display: block;
+            font-weight: 600;
+            font-size: 0.925rem;
+            margin-bottom: 0.5rem;
+            color: var(--text-black);
+        }
+
+        input[type="text"], select, textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-family: var(--font-family);
+            font-size: 1rem;
+            transition: border-color 0.15s ease, box-shadow 0.15s ease;
+            background-color: #FAFAFA;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: var(--primary-orange);
+            background-color: #FFF;
+            box-shadow: 0 0 0 3px rgba(255, 164, 46, 0.2);
+        }
+
+        textarea { min-height: 120px; resize: vertical; }
+
+        /* --- ITERATIONS SECTION --- */
+        #iterations-container {
+            border-left: 4px solid #E5E7EB;
+            padding-left: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .iteration-block {
+            background-color: #F9FAFB;
+            padding: 1.5rem;
+            border-radius: 6px;
+            margin-bottom: 1.5rem;
+            position: relative;
+            border: 1px solid var(--border-color);
+        }
+
+        .iteration-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .iteration-title {
+            font-size: 0.875rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-gray);
+        }
+
+        .remove-btn {
+            background: none;
+            border: none;
+            color: #EF4444;
+            font-weight: 600;
+            font-size: 0.875rem;
+            cursor: pointer;
+        }
+        .remove-btn:hover { text-decoration: underline; }
+
+        .add-btn {
+            background: none;
+            border: none;
+            color: var(--primary-orange);
+            font-weight: 700;
+            font-size: 0.95rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .add-btn:hover { color: var(--primary-orange-hover); text-decoration: underline; }
+
+        /* --- ACTION BUTTONS --- */
+        .actions {
+            margin-top: 3rem;
+            display: flex;
+            gap: 1rem;
+            flex-direction: column-reverse;
+        }
+
+        @media (min-width: 640px) {
+            .actions { flex-direction: row; }
+        }
+
+        .btn {
+            padding: 0.875rem 1.5rem;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: center;
+            border: none;
+            flex: 1;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-orange);
+            color: var(--text-black);
+            flex: 2;
+        }
+        .btn-primary:hover {
+            background-color: var(--primary-orange-hover);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .btn-primary:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-secondary {
+            background-color: white;
+            border: 2px solid var(--border-color);
+            color: var(--text-black);
+        }
+        .btn-secondary:hover { background-color: #F3F4F6; }
+
+        /* --- UTILS --- */
+        .save-indicator {
+            text-align: center;
+            font-size: 0.75rem;
+            color: #9CA3AF;
+            margin-top: 0.75rem;
+            font-weight: 500;
+        }
+        
+        /* Toast Notification */
+        #toast {
+            visibility: hidden;
+            min-width: 250px;
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            border-radius: 4px;
+            padding: 16px;
+            position: fixed;
+            z-index: 100;
+            left: 50%;
+            bottom: 30px;
+            transform: translateX(-50%);
+            opacity: 0;
+            transition: opacity 0.3s, bottom 0.3s;
+        }
+        #toast.show {
+            visibility: visible;
+            opacity: 1;
+            bottom: 50px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <h1>AI Homework Submission Portal</h1>
+            <h2>for Ibec in partnership with Brightbeam</h2>
+        </header>
+
+        <form id="homeworkForm">
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="participantName">Participant Name *</label>
+                    <input type="text" id="participantName" name="participantName" placeholder="e.g. Jane Doe" required>
+                </div>
+                <div class="form-group">
+                    <label for="cohort">Cohort *</label>
+                    <select id="cohort" name="cohort" required>
+                        <option value="" disabled selected>Select...</option>
+                        <option value="Cohort 6">Cohort 6</option>
+                        <option value="Cohort 7">Cohort 7</option>
+                        <option value="Cohort 8">Cohort 8</option>
+                        <option value="Cohort 9">Cohort 9</option>
+                        <option value="Cohort 10">Cohort 10</option>
+                        <option value="Cohort 11">Cohort 11</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="module">Module *</label>
+                <select id="module" name="module" required>
+                    <option value="" disabled selected>Select...</option>
+                    <option value="Module 1">Module 1</option>
+                    <option value="Module 2">Module 2</option>
+                    <option value="Module 3">Module 3</option>
+                    <option value="Module 4">Module 4</option>
+                    <option value="Module 5">Module 5</option>
+                    <option value="Module 6">Module 6</option>
+                    <option value="Module 7">Module 7</option>
+                    <option value="Module 8">Module 8</option>
+                    <option value="Module 9">Module 9</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="goal">Goal: What were you trying to achieve? *</label>
+                <textarea id="goal" name="goal" placeholder="E.g., Summarize a meeting, Create a strategy document..." required></textarea>
+            </div>
+
+            <div id="iterations-container">
+                </div>
+            
+            <button type="button" class="add-btn" onclick="addIteration()">
+                <span>+</span> Add another iteration
+            </button>
+
+            <hr style="border: 0; border-top: 1px solid var(--border-color); margin: 2rem 0;">
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="successes">Successes</label>
+                    <textarea id="successes" name="successes" placeholder="What went well?" style="min-height: 80px;"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="blockers">Blockers</label>
+                    <textarea id="blockers" name="blockers" placeholder="Where did you get stuck?" style="min-height: 80px;"></textarea>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="impact">Impact *</label>
+                <div style="font-size: 0.85rem; color: #666; margin-bottom: 0.5rem; margin-top: -0.25rem;">e.g. 'Saved 30 mins' or 'Higher quality output'</div>
+                <input type="text" id="impact" name="impact" required>
+            </div>
+
+            <div class="form-group">
+                <label for="reflections">Reflections: What did you learn? *</label>
+                <textarea id="reflections" name="reflections" required></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="questions">Questions for your Coach</label>
+                <textarea id="questions" name="questions"></textarea>
+            </div>
+
+            <div class="actions">
+                <button type="button" class="btn btn-secondary" id="copyBtn" onclick="copyToClipboard()">Copy to Clipboard (Backup)</button>
+                <button type="submit" class="btn btn-primary" id="submitBtn">Submit Homework</button>
+            </div>
+            <div class="save-indicator" id="saveIndicator">Draft saved to browser</div>
+
+        </form>
+    </div>
+
+    <div id="toast">Message</div>
+
+    <script>
+        // ==========================================
+        // CONFIGURATION (YOUR URL IS INSERTED BELOW)
+        // ==========================================
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw011XNCYQFyhYERdlJxP1XZ6dxpdFoVw-N-dAnppQ0WvADT7vFnd6vljmnP-2nxkTb/exec'; 
+        const STORAGE_KEY = 'brightbeam_homework_draft_v1';
+
+        // ==========================================
+        // STATE MANAGEMENT
+        // ==========================================
+        let iterations = [];
+
+        // ==========================================
+        // INITIALIZATION (AUTO-SAVE RESTORE)
+        // ==========================================
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedData = localStorage.getItem(STORAGE_KEY);
+            
+            if (savedData) {
+                try {
+                    const parsed = JSON.parse(savedData);
+                    
+                    // 1. Restore Standard Fields
+                    const form = document.getElementById('homeworkForm');
+                    Array.from(form.elements).forEach(element => {
+                        if (parsed.formData && parsed.formData[element.name] !== undefined) {
+                            element.value = parsed.formData[element.name];
+                        }
+                    });
+
+                    // 2. Restore Iterations
+                    if (parsed.iterations && parsed.iterations.length > 0) {
+                        iterations = parsed.iterations;
+                    } else {
+                        iterations = [{ prompt: '', aiOutput: '' }];
+                    }
+                } catch (e) {
+                    console.error("Error parsing saved draft", e);
+                    iterations = [{ prompt: '', aiOutput: '' }];
+                }
+            } else {
+                iterations = [{ prompt: '', aiOutput: '' }];
+            }
+
+            renderIterations();
+            setupAutoSave();
+        });
+
+        // ==========================================
+        // ITERATION LOGIC
+        // ==========================================
+        function renderIterations() {
+            const container = document.getElementById('iterations-container');
+            container.innerHTML = ''; // Clear current
+
+            iterations.forEach((iter, index) => {
+                const block = document.createElement('div');
+                block.className = 'iteration-block';
+                block.innerHTML = `
+                    <div class="iteration-header">
+                        <span class="iteration-title">Iteration ${index + 1}</span>
+                        ${index > 0 ? `<button type="button" class="remove-btn" onclick="removeIteration(${index})">Remove</button>` : ''}
+                    </div>
+                    <div class="form-group">
+                        <label>Prompt</label>
+                        <textarea 
+                            class="iter-input" 
+                            data-index="${index}" 
+                            data-type="prompt" 
+                            placeholder="Paste the prompt you used" 
+                            required>${iter.prompt || ''}</textarea>
+                    </div>
+                    <div class="form-group" style="margin-bottom:0;">
+                        <label>AI Output</label>
+                        <textarea 
+                            class="iter-input" 
+                            data-index="${index}" 
+                            data-type="aiOutput" 
+                            placeholder="Paste the result" 
+                            required>${iter.aiOutput || ''}</textarea>
+                    </div>
+                `;
+                container.appendChild(block);
+            });
+            
+            // Re-attach listeners to new elements for auto-save
+            attachIterationListeners();
+        }
+
+        function addIteration() {
+            iterations.push({ prompt: '', aiOutput: '' });
+            renderIterations();
+            saveToLocal();
+        }
+
+        function removeIteration(index) {
+            if (confirm('Are you sure you want to remove this iteration?')) {
+                iterations.splice(index, 1);
+                renderIterations();
+                saveToLocal();
+            }
+        }
+
+        function attachIterationListeners() {
+            document.querySelectorAll('.iter-input').forEach(input => {
+                input.addEventListener('input', (e) => {
+                    const idx = parseInt(e.target.dataset.index);
+                    const field = e.target.dataset.type;
+                    iterations[idx][field] = e.target.value;
+                    saveToLocal();
+                });
+            });
+        }
+
+        // ==========================================
+        // AUTO-SAVE LOGIC
+        // ==========================================
+        function setupAutoSave() {
+            // Listen to standard fields
+            const form = document.getElementById('homeworkForm');
+            Array.from(form.elements).forEach(element => {
+                if (element.name) {
+                    element.addEventListener('input', saveToLocal);
+                    element.addEventListener('change', saveToLocal); // For selects
+                }
+            });
+        }
+
+        function saveToLocal() {
+            const form = document.getElementById('homeworkForm');
+            const formData = {};
+            
+            // Capture standard fields
+            Array.from(form.elements).forEach(element => {
+                if (element.name) {
+                    formData[element.name] = element.value;
+                }
+            });
+
+            const dataToSave = {
+                formData: formData,
+                iterations: iterations
+            };
+
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(dataToSave));
+            
+            // Visual feedback
+            const indicator = document.getElementById('saveIndicator');
+            indicator.style.opacity = '1';
+            indicator.textContent = 'Saving...';
+            setTimeout(() => {
+                indicator.textContent = 'Draft saved to browser';
+            }, 500);
+        }
+
+        // ==========================================
+        // SUBMISSION LOGIC
+        // ==========================================
+        document.getElementById('homeworkForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const submitBtn = document.getElementById('submitBtn');
+            const originalText = submitBtn.innerText;
+
+            submitBtn.disabled = true;
+            submitBtn.innerText = 'Submitting...';
+
+            // Gather Data
+            const form = e.target;
+            const rawData = new FormData(form);
+            const plainData = Object.fromEntries(rawData.entries());
+
+            // Combine Iterations for the Spreadsheet
+            const combinedPrompt = iterations.map((it, i) => `[Iteration ${i + 1}]\n${it.prompt}`).join('\n\n---\n\n');
+            const combinedOutput = iterations.map((it, i) => `[Iteration ${i + 1}]\n${it.aiOutput}`).join('\n\n---\n\n');
+
+            const payload = {
+                ...plainData,
+                prompt: combinedPrompt,
+                aiOutput: combinedOutput
+            };
+
+            try {
+                // POST request 
+                await fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'no-cors', // Important for Google Apps Script simple triggers
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(payload)
+                });
+
+                // Success Handling (With no-cors we assume success if no error thrown)
+                showToast("Homework Submitted Successfully!");
+                localStorage.removeItem(STORAGE_KEY); // Clear draft
+                form.reset();
+                iterations = [{ prompt: '', aiOutput: '' }];
+                renderIterations();
+                document.getElementById('saveIndicator').textContent = '';
+
+            } catch (error) {
+                console.error(error);
+                alert("Error submitting. Please use the 'Copy to Clipboard' button and email it to your coach.");
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerText = originalText;
+            }
+        });
+
+        // ==========================================
+        // CLIPBOARD BACKUP
+        // ==========================================
+        function copyToClipboard() {
+            const form = document.getElementById('homeworkForm');
+            let text = "AI HOMEWORK SUBMISSION\n----------------------\n";
+            text += `Participant: ${document.getElementById('participantName').value}\n`;
+            text += `Cohort: ${document.getElementById('cohort').value}\n`;
+            text += `Module: ${document.getElementById('module').value}\n\n`;
+            text += `Goal: ${document.getElementById('goal').value}\n\n`;
+
+            iterations.forEach((it, i) => {
+                text += `--- Iteration ${i+1} ---\n`;
+                text += `Prompt: ${it.prompt}\n`;
+                text += `Output: ${it.aiOutput}\n\n`;
+            });
+
+            text += `Successes: ${document.getElementById('successes').value}\n`;
+            text += `Blockers: ${document.getElementById('blockers').value}\n`;
+            text += `Impact: ${document.getElementById('impact').value}\n`;
+            text += `Reflections: ${document.getElementById('reflections').value}\n`;
+            text += `Questions: ${document.getElementById('questions').value}\n`;
+
+            navigator.clipboard.writeText(text).then(() => {
+                showToast("Copied to Clipboard!");
+            });
+        }
+
+        function showToast(msg) {
+            const toast = document.getElementById("toast");
+            toast.textContent = msg;
+            toast.className = "show";
+            setTimeout(() => { toast.className = toast.className.replace("show", ""); }, 3000);
+        }
+    </script>
+</body>
+</html>
